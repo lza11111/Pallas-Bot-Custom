@@ -86,10 +86,10 @@ class ChatData:
 
 
 class Chat:
-    answer_threshold = 3            # answer 相关的阈值，值越小牛牛废话越多，越大话越少
-    answer_threshold_weights = [7, 23, 70]  # answer 阈值权重，不知道怎么解释，自己看源码吧（
+    answer_threshold = 2            # answer 相关的阈值，值越小牛牛废话越多，越大话越少
+    answer_threshold_weights = [50, 75, 90]  # answer 阈值权重，不知道怎么解释，自己看源码吧（
     cross_group_threshold = 2       # N 个群有相同的回复，就跨群作为全局回复
-    repeat_threshold = 3            # 复读的阈值，群里连续多少次有相同的发言，就复读
+    repeat_threshold = 2            # 复读的阈值，群里连续多少次有相同的发言，就复读
     speak_threshold = 5             # 主动发言的阈值，越小废话越多
 
     split_probability = 0.5         # 按逗号分割回复语的概率
@@ -99,7 +99,7 @@ class Chat:
     speak_continuously_max_len = 2  # 连续主动说话最多几句话
 
     save_time_threshold = 3600      # 每隔多久进行一次持久化 ( 秒 )
-    save_count_threshold = 1000     # 单个群超过多少条聊天记录就进行一次持久化。与时间是或的关系
+    save_count_threshold = 100     # 单个群超过多少条聊天记录就进行一次持久化。与时间是或的关系
 
     blacklist_answer = defaultdict(set)
     blacklist_answer_reserve = defaultdict(set)
