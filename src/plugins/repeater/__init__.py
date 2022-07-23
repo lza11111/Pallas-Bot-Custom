@@ -196,7 +196,7 @@ msg_analyzer = on_message(
 
 @msg_analyzer.handle()
 async def analyzer(bot: Bot, event: PrivateMessageEvent, state: T_State):
-    raw_message = ''
+    raw_message = '正在分析...'
 
     logger.info('repeater | bot [{}] ready to analyze [{}] in group [{}]'.format(
         event.self_id, raw_message, event.user_id))
