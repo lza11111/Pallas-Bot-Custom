@@ -838,6 +838,9 @@ def _chat_sync():
 # Auto sync on program exit
 atexit.register(_chat_sync)
 
+def query_messages():
+    return message_mongo.count_documents({})
+
 
 if __name__ == '__main__':
 

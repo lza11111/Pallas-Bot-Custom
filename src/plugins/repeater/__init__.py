@@ -16,7 +16,7 @@ from nonebot.permission import Permission
 from nonebot.permission import SUPERUSER
 from src.common.config import BotConfig
 
-from .model import Chat
+from .model import Chat, query_messages
 
 any_msg = on_message(
     priority=15,
@@ -196,7 +196,7 @@ msg_analyzer = on_message(
 
 @msg_analyzer.handle()
 async def analyzer(bot: Bot, event: PrivateMessageEvent, state: T_State):
-    raw_message = '正在分析...'
+    raw_message = '总共有 {} 个消息'.format(query_messages())
 
     logger.info('repeater | bot [{}] ready to analyze [{}] in group [{}]'.format(
         event.self_id, raw_message, event.user_id))
