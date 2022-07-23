@@ -188,20 +188,20 @@ def update_data():
 
 
 msg_analyzer = on_message(
-    rule=to_me() & keyword('分析'),
-    priority=5,
+    rule=to_me() & keyword('废话分析'),
+    priority=1,
     block=True,
-    permission=permission.PRIVATE_FRIEND
+    permission=permission.GROUP_ADMIN | permission.GROUP_OWNER | SUPERUSER
 )
 
 @msg_analyzer.handle()
-async def analyzer(bot: Bot, event: PrivateMessageEvent, state: T_State):
-    raw_message = '本群发言最多的人是：\n'
-    member_list = await bot.get_group_member_list(group_id=498338171)
+async def analyzer(bot: Bot, event: GroupMessageEvent, state: T_State):
+    raw_message = '本群废话最多的人是：\n'
+    member_list = await bot.get_group_member_list(group_id=event.group_id)
     for context in list(query_messages()):
         for user in member_list:
             if user['user_id'] == context['_id']:
-                raw_message += '{0:{2}<20}: {1}条\n'.format(user['card'], context['num'], chr(12288))
+                raw_message += '{0:<15}: {1}条\n'.format(user['card'], context['num'])
     
     logger.info('repeater | bot [{}] ready to analyze in group [{}]'.format(
         event.self_id, event.user_id))
