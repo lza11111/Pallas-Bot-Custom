@@ -197,7 +197,7 @@ msg_analyzer = on_message(
 @msg_analyzer.handle()
 async def analyzer(bot: Bot, event: PrivateMessageEvent, state: T_State):
     raw_message = ''
-    member_list = await bot.get_group_member_list(498338171)
+    member_list = await bot.get_group_member_list(group_id=498338171)
     for context in list(query_messages()):
         for user in member_list:
             if user['user_id'] == context['user_id']:
