@@ -843,7 +843,9 @@ def query_messages():
         {'$group': {
             '_id': '$user_id',
             'num': {'$sum': 1}
-        }}
+        }},
+        { '$sort' : { 'num' : -1 } },
+        { '$limit': 5 }
     ])
     return result
 
