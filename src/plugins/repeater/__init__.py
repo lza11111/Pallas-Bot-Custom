@@ -185,3 +185,20 @@ update_sched = require('nonebot_plugin_apscheduler').scheduler
 @update_sched.scheduled_job('cron', hour='4')
 def update_data():
     Chat.clearup_context()
+
+
+msg_analyzer = on_message(
+    rule=to_me() & keyword('分析'),
+    priority=5,
+    block=True,
+    permission=permission.PRIVATE_FRIEND
+)
+
+@msg_analyzer.handle()
+async def analyzer(bot: Bot, event: GroupMessageEvent, state: T_State):
+    raw_message = ''
+
+    logger.info('repeater | bot [{}] ready to analyze [{}] in group [{}]'.format(
+        event.self_id, raw_message, event.group_id))
+
+    await msg_analyzer.finish(raw_message)
