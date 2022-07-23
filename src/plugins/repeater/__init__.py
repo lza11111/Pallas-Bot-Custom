@@ -201,7 +201,7 @@ async def analyzer(bot: Bot, event: PrivateMessageEvent, state: T_State):
     for context in list(query_messages()):
         for user in member_list:
             if user['user_id'] == context['_id']:
-                raw_message += '{0:{2}^15}: {1}条\n'.format(user['card'], context['num'], chr(12288))
+                raw_message += '{0:{2}<20}: {1}条\n'.format(user['card'], context['num'], chr(12288))
     
     logger.info('repeater | bot [{}] ready to analyze in group [{}]'.format(
         event.self_id, event.user_id))
