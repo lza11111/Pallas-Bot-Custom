@@ -90,7 +90,7 @@ class Chat:
     answer_threshold_weights = [50, 75, 90]  # answer 阈值权重，不知道怎么解释，自己看源码吧（
     cross_group_threshold = 2       # N 个群有相同的回复，就跨群作为全局回复
     repeat_threshold = 2            # 复读的阈值，群里连续多少次有相同的发言，就复读
-    speak_threshold = 5             # 主动发言的阈值，越小废话越多
+    speak_threshold = 20             # 主动发言的阈值，越小废话越多
 
     split_probability = 0.5         # 按逗号分割回复语的概率
     voice_probability = 0           # 回复语音的概率（仅纯文字）
