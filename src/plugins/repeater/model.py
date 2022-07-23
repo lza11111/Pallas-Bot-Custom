@@ -839,7 +839,13 @@ def _chat_sync():
 atexit.register(_chat_sync)
 
 def query_messages():
-    return message_mongo.count_documents({})
+    result = message_mongo.aggregate([
+        {'$group': {
+            '_id': '$user_id',
+            'num': {'$sum': 1}
+        }}
+    ])
+    return result
 
 
 if __name__ == '__main__':

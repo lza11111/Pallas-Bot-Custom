@@ -196,9 +196,11 @@ msg_analyzer = on_message(
 
 @msg_analyzer.handle()
 async def analyzer(bot: Bot, event: PrivateMessageEvent, state: T_State):
-    raw_message = '总共有 {} 个消息'.format(query_messages())
+    raw_message = ''
+    for user in list(query_messages()):
+        raw_message += '{} {}\n'.format(user['_id'], user['num'])
 
-    logger.info('repeater | bot [{}] ready to analyze [{}] in group [{}]'.format(
-        event.self_id, raw_message, event.user_id))
+    logger.info('repeater | bot [{}] ready to analyze in group [{}]'.format(
+        event.self_id, event.user_id))
 
     await msg_analyzer.finish(raw_message)
