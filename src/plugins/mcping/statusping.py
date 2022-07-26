@@ -46,7 +46,7 @@ def parse_address(address: str, *, default_port: Optional[int] = None) -> Tuple[
         return hostname, port
 
 def pingmc(host):
-    text = ""
+    text = "test\n"
     try:
         hostname, port = parse_address(host, default_port=19132)
         server = BedrockServer(hostname, port)
@@ -73,6 +73,5 @@ def pingmc(host):
                 players = get_status["players"]["online"]
                 text += f"The server {description} has {players} players online and replied in {ping} ms. \nversion:{version}"
             except Exception as e:
-            # print(get_status)
                 text += f"The server is offline or the port is wrong. \n{e}\n"
     return text
