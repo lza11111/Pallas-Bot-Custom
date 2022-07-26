@@ -34,7 +34,7 @@ async def mc_ping_handler(bot: Bot, event: PrivateMessageEvent, state: T_State):
     if not command.startswith('mcping'):
         return
     command = command.split(' ')
-    mchost = global_config.dict()['MC_DEFAULT']
+    mchost = global_config.mc_default
     if len(command) == 2:
         mchost = command[1]
     logger.info('repeater | bot [{}] ready to mc_ping in group [{}]'.format(
