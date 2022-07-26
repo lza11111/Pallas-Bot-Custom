@@ -19,7 +19,7 @@ from .statusping import pingmc
 
 mc_ping = on_message(
     rule=to_me() & keyword('mcping'),
-    priority=1,
+    priority=15,
     block=True,
     permission=permission.PRIVATE_FRIEND
 )
