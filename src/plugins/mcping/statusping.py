@@ -46,7 +46,7 @@ def parse_address(address: str, *, default_port: Optional[int] = None) -> Tuple[
         return hostname, port
 
 def pingmc(host):
-    text = "test\n"
+    text = ""
     try:
         hostname, port = parse_address(host, default_port=19132)
         server = BedrockServer(hostname, port)
