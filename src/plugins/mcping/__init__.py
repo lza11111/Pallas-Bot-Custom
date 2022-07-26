@@ -5,6 +5,7 @@ import time
 import os
 import threading
 
+import nonebot
 from nonebot import Config, Env, on_message, require, get_bot, logger, get_driver
 from nonebot.exception import ActionFailed
 from nonebot.typing import T_State
@@ -16,6 +17,8 @@ from nonebot.permission import Permission
 from nonebot.permission import SUPERUSER
 
 from .statusping import pingmc
+
+global_config = nonebot.get_driver().config
 
 mc_ping = on_message(
     rule=to_me() & keyword('mcping'),
@@ -31,7 +34,7 @@ async def mc_ping_handler(bot: Bot, event: PrivateMessageEvent, state: T_State):
     if not command.startswith('mcping'):
         return
     command = command.split(' ')
-    mchost = Config.dict()['MC_DEFAULT']
+    mchost = global_config.dict()['MC_DEFAULT']
     if len(command) == 2:
         mchost = command[1]
     logger.info('repeater | bot [{}] ready to mc_ping in group [{}]'.format(
