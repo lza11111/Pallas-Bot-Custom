@@ -37,7 +37,7 @@ async def mc_ping_handler(bot: Bot, event: PrivateMessageEvent, state: T_State):
     mchost = global_config.mc_default
     if len(command) == 2:
         mchost = command[1]
-    logger.info('repeater | bot [{}] ready to mc_ping in group [{}]'.format(
-        event.self_id, event.group_id))
+    logger.info('repeater | bot [{}] ready to mc_ping'.format(
+        event.self_id))
     await mc_ping.finish(pingmc(mchost))
     
