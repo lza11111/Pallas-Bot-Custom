@@ -24,11 +24,11 @@ mc_ping = on_message(
     rule=to_me() & keyword('mcping'),
     priority=15,
     block=True,
-    permission=permission.PRIVATE_FRIEND
+    permission=permission.GROUP
 )
 
 @mc_ping.handle()
-async def mc_ping_handler(bot: Bot, event: PrivateMessageEvent, state: T_State):
+async def mc_ping_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
     
     command = event.get_plaintext().strip()
     if not command.startswith('mcping'):
