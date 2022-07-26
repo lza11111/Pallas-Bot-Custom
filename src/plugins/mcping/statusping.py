@@ -53,14 +53,14 @@ def pingmc(host):
         status = server.status()
         text += f"The server {status.motd} has {status.players_online} players online and replied in {status.latency} ms. \nversion:{status.version.version}"
     except Exception as e:
-        text += f"The server {host} isn't BDS. \n{e}\n"
+        text += f"The server {host} isn't BDS. reason: {e}\n"
         try:
             hostname, port = parse_address(host, default_port=25565)
             server = JavaServer(hostname, port)
             status = server.status()
-            text += f"The server {status.description} has {status.players.online} players online and replied in {status.latency} ms. \nversion:{status.version}"
+            text += f"The server {status.description} has {status.players.online} players online and replied in {status.latency} ms. \nversion:{status.version.name} protocol:{status.version.protocol}"
         except Exception as e:
-            text += f"The server {host} fetch failed. \n{e}\n"
+            text += f"The server {host} fetch failed. reason: {e}\n"
             try:
                 hostname, port = parse_address(host, default_port=25565)
                 get_status = StatusPing(host, port).get_status()
@@ -73,5 +73,5 @@ def pingmc(host):
                 players = get_status["players"]["online"]
                 text += f"The server {description} has {players} players online and replied in {ping} ms. \nversion:{version}"
             except Exception as e:
-                text += f"The server is offline or the port is wrong. \n{e}\n"
+                text += f"The server is offline or the port is wrong. reason: {e}\n"
     return text
