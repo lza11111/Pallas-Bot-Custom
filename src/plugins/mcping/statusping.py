@@ -51,14 +51,14 @@ def pingmc(host):
         hostname, port = parse_address(host, default_port=19132)
         server = BedrockServer(hostname, port)
         status = server.status()
-        text += f"The server {status.motd} has {status.players_online} players online and replied in {status.latency} ms. \nversion:{status.version.version}"
+        text += f"The server {status.motd} has {status.players_online} players online and replied in {round(status.latency, 2)} ms. \nversion:{status.version.version}"
     except Exception as e:
         text += f"The server {host} isn't BDS. reason: {e}\n"
         try:
             hostname, port = parse_address(host, default_port=25565)
             server = JavaServer(hostname, port)
             status = server.status()
-            text += f"The server {status.description} has {status.players.online} players online and replied in {status.latency} ms. \nversion:{status.version.name} protocol:{status.version.protocol}"
+            text += f"The server {status.description} has {status.players.online} players online and replied in {round(status.latency, 2)} ms. \nversion:{status.version.name} protocol:{status.version.protocol}"
         except Exception as e:
             text += f"The server {host} fetch failed. reason: {e}\n"
             try:
@@ -71,7 +71,7 @@ def pingmc(host):
                 ping = get_status["ping"]
                 version = get_status["version"]["name"]
                 players = get_status["players"]["online"]
-                text += f"The server {description} has {players} players online and replied in {ping} ms. \nversion:{version}"
+                text += f"The server {description} has {players} players online and replied in {round(ping, 2)} ms. \nversion:{version}"
             except Exception as e:
                 text += f"The server is offline or the port is wrong. reason: {e}\n"
     return text
