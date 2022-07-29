@@ -6,7 +6,7 @@ import os
 import threading
 
 import nonebot
-from nonebot import Config, Env, on_message, on_command
+from nonebot import Config, Env, on_message, on_command, on_startswith
 from nonebot.exception import ActionFailed
 from nonebot.typing import T_State
 from nonebot.rule import keyword, to_me, Rule
@@ -25,8 +25,8 @@ def permission_mode(mode):
         return permission.GROUP
     return permission.PRIVATE
 
-request_setu = on_command(
-    cmd='我要色色',
+request_setu = on_startswith(
+    msg='我要色色',
     rule=to_me(),
     priority=15,
     block=True,
