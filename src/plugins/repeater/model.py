@@ -12,35 +12,12 @@ import random
 import re
 import atexit
 
+import nonebot
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from src.common.config import BotConfig
-
-mongo_client = pymongo.MongoClient('127.0.0.1', 27017, w=0)
-
-mongo_db = mongo_client['PallasBot']
-
-message_mongo = mongo_db['message']
-message_mongo.create_index(name='time_index',
-                           keys=[('time', pymongo.DESCENDING)])
-
-context_mongo = mongo_db['context']
-context_mongo.create_index(name='keywords_index',
-                           keys=[('keywords', pymongo.HASHED)])
-context_mongo.create_index(name='count_index',
-                           keys=[('count', pymongo.DESCENDING)])
-context_mongo.create_index(name='time_index',
-                           keys=[('time', pymongo.DESCENDING)])
-context_mongo.create_index(name='answers_index',
-                           keys=[('answers.group_id', pymongo.TEXT),
-                                 ('answers.keywords', pymongo.TEXT)],
-                           default_language='none')
-
-blacklist_mongo = mongo_db['blacklist']
-blacklist_mongo.create_index(name='group_index',
-                             keys=[('group_id', pymongo.HASHED)])
-
+from db.mongo import message_mongo, context_mongo, blacklist_mongo
 
 @dataclass
 class ChatData:
