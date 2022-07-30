@@ -8,6 +8,9 @@ def query_score(user_id, group_id, score_type='setu_score'):
 
     score_used = score_mongo.find_one(
         {'user_id': user_id, 'group_id': group_id})
+    if score_used is None:
+        score_used = {'user_id': user_id, 'group_id': group_id, score_type: 0}
+        score_mongo.insert_one(score_used)
     return msg_sum - score_used[score_type]
 
 
