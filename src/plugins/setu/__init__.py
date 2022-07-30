@@ -11,7 +11,7 @@ from nonebot.exception import ActionFailed
 from nonebot.typing import T_State
 from nonebot.rule import keyword, to_me, Rule
 from nonebot.adapters import Bot, Event
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent, MessageSegment
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent, MessageSegment, Message
 from nonebot.adapters.onebot.v11 import permission
 from nonebot.permission import Permission
 from nonebot.permission import SUPERUSER
@@ -31,10 +31,10 @@ request_setu = on_startswith(
 async def request_setu_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
     score = query_score(event.user_id, event.group_id)
     if score < 100:
-        await request_setu.finish(f'[CQ:reply,id={event.message_id}]不可以色色！')
-        return
+        # await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]不可以色色！'))
+        await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]{str(request_one_setu())}'))
     use_score(event.user_id, event.group_id, 'setu_score', 100)
-    await request_setu.finish(f'[CQ:reply,id={event.message_id}]{str(request_one_setu())}')
+    await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]{str(request_one_setu())}'))
 
 score_query = on_message(
     rule=to_me() & keyword('可以色色吗'),
