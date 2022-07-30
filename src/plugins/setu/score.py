@@ -8,8 +8,7 @@ def query_score(user_id, group_id):
 
     score_used = score_mongo.find_one(
         {'user_id': user_id, 'group_id': group_id})
-    print(msg_sum, score_used["score"])
-    return 0
+    return msg_sum - score_used["score"]
 
 
 def use_score(user_id, group_id, score_type, score):

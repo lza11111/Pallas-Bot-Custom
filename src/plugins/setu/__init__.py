@@ -11,40 +11,55 @@ from nonebot.exception import ActionFailed
 from nonebot.typing import T_State
 from nonebot.rule import keyword, to_me, Rule
 from nonebot.adapters import Bot, Event
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent, MessageSegment
 from nonebot.adapters.onebot.v11 import permission
 from nonebot.permission import Permission
 from nonebot.permission import SUPERUSER
 
 from .setu import request_one_setu
-
-MODE = 'private'
-
-def permission_mode(mode):
-    if mode == 'group':
-        return permission.GROUP
-    return permission.PRIVATE
+from .score import query_score, use_score
 
 request_setu = on_startswith(
     msg='我要色色',
     rule=to_me(),
     priority=15,
     block=True,
-    permission=permission_mode(MODE)
+    permission=permission.GROUP
 )
 
 @request_setu.handle()
-async def request_setu_handler(bot: Bot, event: PrivateMessageEvent, state: T_State):
-    await request_setu.finish(request_one_setu())
+async def request_setu_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
+    score = query_score(event.user_id, event.group_id)
+    if score < 100:
+        await event.reply('不可以色色!')
+        return
+    use_score(event.user_id, event.group_id, 'setu_score', 100)
+    await event.reply(request_one_setu())
 
 score_query = on_message(
     rule=to_me() & keyword('可以色色吗'),
     priority=15,
     block=True,
-    permission=permission_mode(MODE)
+    permission=permission.GROUP
 )
 
 @score_query.handle()
-async def score_query_handler(bot: Bot, event: PrivateMessageEvent, state: T_State):
-    
-    await score_query.finish()
+async def score_query_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
+    score = query_score(event.user_id, event.group_id)
+    msg = f'你的色色点数还剩{score}'
+    if score > 0:
+        msg += '，可以色色'
+    else:
+        msg += '，不可以色色了哦'
+    await score_query.finish(msg)
+
+rule_query = on_message(
+    rule=to_me() & keyword('来点色图'),
+    priority=15,
+    block=True,
+    permission=permission.GROUP
+)
+
+async def rule_query_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
+    await rule_query.finish('请@我并说 想要色色, 每次色色会消耗100点色色点数哦')
+                            
