@@ -1,14 +1,14 @@
 
 from db.mongo import message_mongo, context_mongo, blacklist_mongo, score_mongo
 
-def query_score(user_id, group_id):
+def query_score(user_id, group_id, score_type='setu_score'):
     msg_sum = message_mongo.count_documents({
         '_id': user_id,
     })
 
     score_used = score_mongo.find_one(
         {'user_id': user_id, 'group_id': group_id})
-    return msg_sum - score_used["score"]
+    return msg_sum - score_used[score_type]
 
 
 def use_score(user_id, group_id, score_type, score):
