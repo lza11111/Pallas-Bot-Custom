@@ -31,10 +31,10 @@ request_setu = on_startswith(
 async def request_setu_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
     score = query_score(event.user_id, event.group_id)
     if score < 100:
-        await event.reply('不可以色色!')
+        await request_setu.finish(f'[CQ:reply,id={event.message_id}]不可以色色！')
         return
     use_score(event.user_id, event.group_id, 'setu_score', 100)
-    await event.reply(request_one_setu())
+    await request_setu.finish(f'[CQ:reply,id={event.message_id}]{str(request_one_setu())}')
 
 score_query = on_message(
     rule=to_me() & keyword('可以色色吗'),
@@ -60,6 +60,7 @@ rule_query = on_message(
     permission=permission.GROUP
 )
 
+@rule_query.handle()
 async def rule_query_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
-    await rule_query.finish('请@我并说 想要色色, 每次色色会消耗100点色色点数哦')
+    await rule_query.finish('请@我并说 我要色色, 每次色色会消耗100点色色点数哦')
                             
