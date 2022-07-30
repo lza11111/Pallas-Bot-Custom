@@ -22,7 +22,7 @@ from .score import query_score, use_score
 request_setu = on_startswith(
     msg='我要色色',
     rule=to_me(),
-    priority=15,
+    priority=14,
     block=True,
     permission=permission.GROUP
 )
@@ -31,14 +31,17 @@ request_setu = on_startswith(
 async def request_setu_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
     score = query_score(event.user_id, event.group_id)
     if score < 100:
-        # await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]不可以色色！'))
-        await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]{str(request_one_setu())}'))
-    use_score(event.user_id, event.group_id, 'setu_score', 100)
-    await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]{str(request_one_setu())}'))
+        await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]不可以色色！'))
+    try:
+        await request_setu.send(Message(f'[CQ:reply,id={event.message_id}]{str(request_one_setu())}'))
+        use_score(event.user_id, event.group_id, 'setu_score', 100)
+    except:
+        await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]色色失败！不消耗点数'))
+
 
 score_query = on_message(
     rule=to_me() & keyword('可以色色吗'),
-    priority=15,
+    priority=14,
     block=True,
     permission=permission.GROUP
 )
@@ -55,7 +58,7 @@ async def score_query_handler(bot: Bot, event: GroupMessageEvent, state: T_State
 
 rule_query = on_message(
     rule=to_me() & keyword('来点色图'),
-    priority=15,
+    priority=14,
     block=True,
     permission=permission.GROUP
 )
