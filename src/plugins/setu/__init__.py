@@ -50,7 +50,7 @@ score_query = on_message(
 async def score_query_handler(bot: Bot, event: GroupMessageEvent, state: T_State):
     score = query_score(event.user_id, event.group_id)
     msg = f'你的色色点数还剩{score}'
-    if score > 0:
+    if score > 100:
         msg += '，可以色色'
     else:
         msg += '，不可以色色了哦'
