@@ -1,4 +1,5 @@
 # main
+nb-cli~=0.6.7
 nonebot2~=2.0.0b2
 nonebot-adapter-onebot~=2.0.0b1
 
@@ -13,3 +14,7 @@ requests-html~=0.10.0
 pydantic~=1.9.0
 pymongo~=3.12.1
 jieba-fast~=0.53
+pypinyin~=0.41.0
+
+#mc
+mcstatus~=9.2.0
