@@ -815,8 +815,11 @@ def _chat_sync():
 # Auto sync on program exit
 atexit.register(_chat_sync)
 
-def query_messages():
+def query_messages(group_id):
     result = message_mongo.aggregate([
+        {
+            'group_id': group_id
+        },
         {'$group': {
             '_id': '$user_id',
             'num': {'$sum': 1}

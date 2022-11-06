@@ -198,10 +198,10 @@ msg_analyzer = on_message(
 async def analyzer(bot: Bot, event: GroupMessageEvent, state: T_State):
     raw_message = '本群废话最多的人是：\n'
     member_list = await bot.get_group_member_list(group_id=event.group_id)
-    for context in list(query_messages()):
+    for context in list(query_messages(event.group_id)):
         for user in member_list:
             if user['user_id'] == context['_id']:
-                raw_message += '{0:<15}: {1}条\n'.format(user['card'], context['num'])
+                raw_message += '{0:<15}: {1}条\n'.format(user['card'] if user['card'] else user['name'], context['num'])
     
     logger.info('repeater | bot [{}] ready to analyze in group [{}]'.format(
         event.self_id, event.user_id))
