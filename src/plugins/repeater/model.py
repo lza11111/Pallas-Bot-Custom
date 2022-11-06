@@ -817,9 +817,9 @@ atexit.register(_chat_sync)
 
 def query_messages(group_id):
     result = message_mongo.aggregate([
-        {
+        {'$match': {
             'group_id': group_id
-        },
+        }},
         {'$group': {
             '_id': '$user_id',
             'num': {'$sum': 1}
