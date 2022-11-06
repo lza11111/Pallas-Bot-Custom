@@ -2,9 +2,9 @@ import pymongo
 import time
 from pymongo.collection import Collection
 from collections import defaultdict
-
+import nonebot
 from typing import Any, Optional
-
+global_config = nonebot.get_driver().config
 
 class BotConfig:
     __config_mongo: Optional[Collection] = None
@@ -12,7 +12,7 @@ class BotConfig:
     @classmethod
     def _get_config_mongo(cls) -> Collection:
         if cls.__config_mongo is None:
-            mongo_client = pymongo.MongoClient('127.0.0.1', 27017, w=0)
+            mongo_client = pymongo.MongoClient(global_config.mongodb_connection, 27017)
             mongo_db = mongo_client['PallasBot']
             cls.__config_mongo = mongo_db['config']
             cls.__config_mongo.create_index(name='accounts_index',
@@ -142,7 +142,7 @@ class GroupConfig:
     @classmethod
     def _get_config_mongo(cls) -> Collection:
         if cls.__config_mongo is None:
-            mongo_client = pymongo.MongoClient('127.0.0.1', 27017, w=0)
+            mongo_client = pymongo.MongoClient(global_config.mongodb_connection, 27017)
             mongo_db = mongo_client['PallasBot']
             cls.__config_mongo = mongo_db['group_config']
             cls.__config_mongo.create_index(name='group_index',
