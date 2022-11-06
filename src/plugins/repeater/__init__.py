@@ -201,7 +201,7 @@ async def analyzer(bot: Bot, event: GroupMessageEvent, state: T_State):
     for context in list(query_messages(event.group_id)):
         for user in member_list:
             if user['user_id'] == context['_id']:
-                raw_message += '{0:<15}: {1}条\n'.format(user['card'] if user['card'] else user['name'], context['num'])
+                raw_message += '{0:<15}: {1}条\n'.format(user['card'] if user['card'] else user['nickname'], context['num'])
     
     logger.info('repeater | bot [{}] ready to analyze in group [{}]'.format(
         event.self_id, event.user_id))
