@@ -17,3 +17,8 @@ pypinyin~=0.41.0
 
 #mc
 mcstatus~=9.2.0
+
+#bilibili
+httpx==0.23.0
+bilireq==0.2.2
+qrcode==7.3.1

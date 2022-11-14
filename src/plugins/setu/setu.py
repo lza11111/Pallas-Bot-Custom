@@ -13,8 +13,7 @@ def request_one_setu(tag=None, r18=False):
         return None
     setu = response['data'][0]
     print(setu)
-    return MessageSegment.text(
-            setu['title']) + MessageSegment.image(file=setu['urls']['original'])
+    return MessageSegment.text(setu['title']) + MessageSegment.image(file=setu['urls']['original'])
 
 if __name__ == "__main__":
     request_one_setu()

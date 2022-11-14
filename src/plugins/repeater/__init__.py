@@ -5,7 +5,8 @@ import time
 import os
 import threading
 
-from nonebot import on_message, require, get_bot, logger, get_driver
+from nonebot import on_message, require, get_bot, get_driver
+from nonebot.log import logger
 from nonebot.exception import ActionFailed
 from nonebot.typing import T_State
 from nonebot.rule import keyword, to_me, Rule
@@ -41,7 +42,7 @@ message_id_lock = threading.Lock()
 message_id_dict = {}
 
 
-@any_msg.handle()
+# @any_msg.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     to_learn = True
     # 多账号登陆，且在同一群中时；避免一条消息被处理多次
@@ -122,11 +123,12 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
         return False
 
     raw_message = ''
-    for item in event.reply.message:
-        raw_reply = str(item)
-        # 去掉图片消息中的 url, subType 等字段
-        raw_message += re.sub(r'(\[CQ\:.+)(?:,url=*)(\])',
-                              r'\1\2', raw_reply)
+    if event.reply is not None:
+        for item in event.reply.message:
+            raw_reply = str(item)
+            # 去掉图片消息中的 url, subType 等字段
+            raw_message += re.sub(r'(\[CQ\:.+)(?:,url=*)(\])',
+                                r'\1\2', raw_reply)
 
     logger.info('repeater | bot [{}] ready to ban [{}] in group [{}]'.format(
         event.self_id, raw_message, event.group_id))
