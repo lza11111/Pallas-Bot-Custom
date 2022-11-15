@@ -22,7 +22,6 @@ from .lib import b23_extract, get_b23_url, video_info_get
 from .draw import binfo_image_create
 
 bilibli = on_message(
-    rule=to_me() & keyword('废话分析'),
     priority=14,
     block=True,
     permission=permission.GROUP_ADMIN | permission.GROUP_OWNER | SUPERUSER
@@ -32,7 +31,6 @@ bilibli = on_message(
 async def bilibili_main(
     bot: Bot, event: GroupMessageEvent, state: T_State
 ):
-
     message_str = event.get_plaintext()
     if "b23.tv" in message_str:
         message_str = await b23_extract(message_str) or message_str

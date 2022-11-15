@@ -5,6 +5,7 @@ import time
 import os
 import threading
 
+import nonebot
 from nonebot import on_message, require, get_bot, get_driver
 from nonebot.log import logger
 from nonebot.exception import ActionFailed
@@ -19,12 +20,13 @@ from src.common.config import BotConfig
 
 from .model import Chat, query_messages
 
+global_config = nonebot.get_driver().config
+
 any_msg = on_message(
     priority=15,
     block=False,
     permission=permission.GROUP  # | permission.PRIVATE_FRIEND
 )
-
 
 async def is_shutup(self_id: int, group_id: int) -> bool:
     info = await get_bot(str(self_id)).call_api('get_group_member_info', **{
@@ -42,8 +44,10 @@ message_id_lock = threading.Lock()
 message_id_dict = {}
 
 
-# @any_msg.handle()
+@any_msg.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
+    if global_config.blocked_groups and event.group_id in global_config.blocked_groups:
+        return
     to_learn = True
     # 多账号登陆，且在同一群中时；避免一条消息被处理多次
     with message_id_lock:
