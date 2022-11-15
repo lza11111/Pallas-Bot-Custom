@@ -52,7 +52,9 @@ async def bilibili_main(
                 f"https://www.bilibili.com/video/{video_info['data']['bvid']}"
             )
             image = await asyncio.to_thread(binfo_image_create, video_info, b23_url)
-            await bilibli.finish(MessageSegment.image(file=image) + b23_url)
         except Exception: # noqa
             logger.exception("视频解析 API 调用出错")
             await bilibli.finish("视频解析 API 调用出错")
+        await bilibli.finish(MessageSegment.image(file=image) + b23_url)
+    else:
+        await bilibli.finish("视频不存在或解析失败")
