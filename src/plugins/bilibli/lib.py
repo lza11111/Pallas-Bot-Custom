@@ -47,4 +47,4 @@ async def video_info_get(vid_id):
             video_info = video_info.json()
         else:
             raise ValueError("视频 ID 格式错误，只可为 av 或 BV")
-        return 
+        return video_info
