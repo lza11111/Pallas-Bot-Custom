@@ -56,5 +56,3 @@ async def bilibili_main(
             logger.exception("视频解析 API 调用出错")
             await bilibli.finish("视频解析 API 调用出错")
         await bilibli.finish(MessageSegment.image(file=image) + b23_url)
-    else:
-        await bilibli.finish("视频不存在或解析失败")
