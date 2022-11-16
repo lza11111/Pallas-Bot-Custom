@@ -45,7 +45,7 @@ async def weibo_main(
     weibo_text = None
     finish = ''
     if weibo_info:
-        logger.info(f'开始处理微博信息: {weibo_id}')
+        logger.info(f'开始处理微博信息: {weibo_id} {weibo_info}')
         try:
             if "isLongText" in weibo_info and weibo_info["isLongText"]:
                 weibo_text = await weibo_long_text(weibo_id)
