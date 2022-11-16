@@ -31,7 +31,7 @@ bilibli = on_message(
 async def bilibili_main(
     bot: Bot, event: GroupMessageEvent, state: T_State
 ):
-    message_str = event.get_plaintext()
+    message_str = str(event.get_message())
     if "b23.tv" in message_str:
         message_str = await b23_extract(message_str) or message_str
     p = re.compile(r"av(\d{1,15})|BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})")
