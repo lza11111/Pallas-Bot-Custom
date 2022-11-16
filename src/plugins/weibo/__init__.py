@@ -37,15 +37,18 @@ async def weibo_main(
         return
     message_str = event.get_plaintext()
     
-    weibo_id = weibo_extract(message_str)
+    weibo_id = await weibo_extract(message_str)
 
     if not weibo_id:
         return
     weibo_info = await weibo_info_get(weibo_id)
     weibo_text = None
     finish = ''
+    if weibo_info and 'error_code' in weibo_info:
+        logger.exception(f'微博信息处理出错: {weibo_id} {weibo_info}')
+        return
     if weibo_info:
-        logger.info(f'开始处理微博信息: {weibo_id} {weibo_info}')
+        logger.info(f'开始处理微博信息: {weibo_id}')
         try:
             if "isLongText" in weibo_info and weibo_info["isLongText"]:
                 weibo_text = await weibo_long_text(weibo_id)
