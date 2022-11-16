@@ -1,3 +1,4 @@
+from typing import Generator, List, Optional, Union, Tuple, Dict, Any
 import asyncio
 import re
 import httpx
@@ -24,7 +25,7 @@ async def weibo_info_get(weibo_id):
             logger.error(f"获取微博失败: {weibo_id} {e}")
             return None
 
-async def weibo_long_text(weibo_id) -> str | None:
+async def weibo_long_text(weibo_id) -> Union[str,None]:
     url = f"https://weibo.com/ajax/statuses/longtext?id={weibo_id}"
     async with httpx.AsyncClient() as client:
         resp = await client.get(url, cookies={"SUB": global_config.weibo_sub})
