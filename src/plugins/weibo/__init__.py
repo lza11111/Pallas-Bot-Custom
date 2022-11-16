@@ -43,15 +43,20 @@ async def weibo_main(
         return
     weibo_info = await weibo_info_get(weibo_id)
     weibo_text = None
+    finish = ''
     if weibo_info:
         logger.info(f'开始处理微博信息: {weibo_id}')
-        if weibo_info["isLongText"]:
-            weibo_text = await weibo_long_text(weibo_id)
-        else:
-            weibo_text = str(weibo_info['text_raw'])
-        
-        image_list = weibo_image_list(weibo_info)
-        finish = weibo_text or ''
-        for image in image_list:
-            finish += MessageSegment.image(file=image)
+        try:
+            if "isLongText" in weibo_info and weibo_info["isLongText"]:
+                weibo_text = await weibo_long_text(weibo_id)
+            else:
+                weibo_text = str(weibo_info['text_raw'])
+            
+            image_list = weibo_image_list(weibo_info)
+            finish = weibo_text or ''
+            for image in image_list:
+                finish += MessageSegment.image(file=image)
+        except Exception as e:
+            logger.exception(f'微博信息处理出错: {e}')
+            return
         await weibo.finish(finish)
