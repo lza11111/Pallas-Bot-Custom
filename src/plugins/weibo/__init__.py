@@ -33,8 +33,6 @@ weibo = on_message(
 async def weibo_main(
     bot: Bot, event: GroupMessageEvent, state: T_State
 ):
-    if global_config.blocked_groups and event.group_id in global_config.blocked_groups:
-        return
     message_str = str(event.get_message())
     
     weibo_id = await weibo_extract(message_str)
