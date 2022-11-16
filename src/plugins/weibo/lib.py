@@ -5,6 +5,7 @@ import httpx
 
 import nonebot
 from nonebot.log import logger
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 global_config = nonebot.get_driver().config
 
@@ -46,3 +47,30 @@ def weibo_image_list(weibo_detail):
     for pic_id in pic_ids:
         pic_urls.append(weibo_detail['pic_infos'][pic_id]['large']['url'])
     return pic_urls
+
+async def deal_with_weibo(weibo_info) -> Union[str, Message, None]:
+    if weibo_info and 'error_code' in weibo_info:
+        logger.exception(f'微博信息处理出错: {weibo_info}')
+        return
+    weibo_id = weibo_info['id']
+    weibo_text = None
+    finish = ''
+    
+    if weibo_info:
+        logger.info(f'开始处理微博信息: {weibo_id}')
+        try:
+            if "isLongText" in weibo_info and weibo_info["isLongText"]:
+                weibo_text = await weibo_long_text(weibo_id)
+            else:
+                weibo_text = str(weibo_info['text_raw'])
+            
+            image_list = weibo_image_list(weibo_info)
+            finish = weibo_text or ''
+            for image in image_list:
+                finish += MessageSegment.image(file=image)
+            if 'retweeted_status' in weibo_info:
+                finish += await deal_with_weibo(weibo_info['retweeted_status']) or MessageSegment.text("\n获取转发微博失败")
+            return finish
+        except Exception as e:
+            logger.exception(f'微博信息处理出错: {e}')
+            return None

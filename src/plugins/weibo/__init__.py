@@ -19,7 +19,7 @@ from nonebot.permission import Permission
 from nonebot.permission import SUPERUSER
 from src.common.config import BotConfig
 
-from .lib import weibo_extract, weibo_info_get, weibo_long_text, weibo_image_list
+from .lib import weibo_extract, weibo_info_get, weibo_long_text, weibo_image_list, deal_with_weibo
 
 global_config = nonebot.get_driver().config
 
@@ -40,24 +40,6 @@ async def weibo_main(
     if not weibo_id:
         return
     weibo_info = await weibo_info_get(weibo_id)
-    weibo_text = None
-    finish = ''
-    if weibo_info and 'error_code' in weibo_info:
-        logger.exception(f'微博信息处理出错: {weibo_id} {weibo_info}')
-        return
-    if weibo_info:
-        logger.info(f'开始处理微博信息: {weibo_id}')
-        try:
-            if "isLongText" in weibo_info and weibo_info["isLongText"]:
-                weibo_text = await weibo_long_text(weibo_id)
-            else:
-                weibo_text = str(weibo_info['text_raw'])
-            
-            image_list = weibo_image_list(weibo_info)
-            finish = weibo_text or ''
-            for image in image_list:
-                finish += MessageSegment.image(file=image)
-        except Exception as e:
-            logger.exception(f'微博信息处理出错: {e}')
-            return
-        await weibo.finish(finish)
+    weibo_message = await deal_with_weibo(weibo_info)
+    if weibo_message:
+        await weibo.finish(weibo_message)
