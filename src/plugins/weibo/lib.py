@@ -45,7 +45,7 @@ def weibo_image_list(weibo_detail):
     pic_ids = weibo_detail['pic_ids']
     pic_urls = []
     for pic_id in pic_ids:
-        pic_urls.append(weibo_detail['pic_infos'][pic_id]['large']['url'])
+        pic_urls.append(weibo_detail['pic_infos'][pic_id]['original']['url'])
     return pic_urls
 
 async def deal_with_weibo(weibo_info) -> Union[str, Message, None]:
