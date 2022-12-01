@@ -46,8 +46,7 @@ message_id_dict = {}
 
 @any_msg.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
-    if global_config.blocked_groups and event.group_id in global_config.blocked_groups:
-        return
+   
     to_learn = True
     # 多账号登陆，且在同一群中时；避免一条消息被处理多次
     with message_id_lock:
@@ -79,6 +78,8 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
 
     config.refresh_cooldown('repeat')
     delay = random.randint(2, 5)
+    if global_config.blocked_groups and event.group_id in global_config.blocked_groups:
+        return
     for item in answers:
         logger.info(
             'repeater | bot [{}] ready to send [{}] to group [{}]'.format(event.self_id, item, event.group_id))
