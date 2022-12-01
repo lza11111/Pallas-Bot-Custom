@@ -25,7 +25,7 @@ global_config = nonebot.get_driver().config
 
 weibo = on_message(
     priority=14,
-    block=True,
+    block=False,
     permission=permission.GROUP_ADMIN | permission.GROUP_OWNER | SUPERUSER
 )
 

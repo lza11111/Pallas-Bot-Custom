@@ -23,7 +23,7 @@ from .draw import binfo_image_create
 
 bilibli = on_message(
     priority=14,
-    block=True,
+    block=False,
     permission=permission.GROUP_ADMIN | permission.GROUP_OWNER | SUPERUSER
 )
 
