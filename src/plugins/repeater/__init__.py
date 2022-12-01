@@ -195,8 +195,8 @@ def update_data():
 
 msg_analyzer = on_message(
     rule=to_me() & keyword('废话分析'),
-    priority=14,
-    block=True,
+    priority=13,
+    block=False,
     permission=permission.GROUP_ADMIN | permission.GROUP_OWNER | SUPERUSER
 )
 

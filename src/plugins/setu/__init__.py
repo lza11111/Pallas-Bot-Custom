@@ -22,7 +22,7 @@ from .score import query_score, use_score
 request_setu = on_startswith(
     msg='我要色色',
     rule=to_me(),
-    priority=14,
+    priority=13,
     block=True,
     permission=permission.GROUP
 )
