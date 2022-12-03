@@ -41,5 +41,5 @@ async def weibo_main(
         return
     weibo_info = await weibo_info_get(weibo_id)
     weibo_message = await deal_with_weibo(weibo_info)
-    if weibo_message:
-        await weibo.finish(weibo_message)
+    await weibo.finish(weibo_message)
+        

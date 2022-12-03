@@ -79,4 +79,4 @@ async def deal_with_weibo(weibo_info) -> Union[str, Message, None]:
             return finish
         except Exception as e:
             logger.exception(f'微博信息处理出错: {e}')
-            return None
+            return '微博信息处理出错: {e}'
