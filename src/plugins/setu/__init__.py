@@ -33,7 +33,7 @@ async def request_setu_handler(bot: Bot, event: GroupMessageEvent, state: T_Stat
     if score < 100:
         await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]不可以色色！'))
     try:
-        await request_setu.send(Message(f'[CQ:reply,id={event.message_id}]{str(request_one_setu())}'))
+        await request_setu.send(Message(f'[CQ:reply,id={event.message_id}]{str(await request_one_setu())}'))
         use_score(event.user_id, event.group_id, 'setu_score', 100)
     except:
         await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]色色失败！不消耗点数'))

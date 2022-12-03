@@ -67,7 +67,11 @@ async def deal_with_weibo(weibo_info) -> Union[str, Message, None]:
             image_list = weibo_image_list(weibo_info)
             finish = weibo_text or ''
             for image in image_list:
-                finish += MessageSegment.image(file=image)
+                # download image as BytesIO
+                async with httpx.AsyncClient() as client:
+                    resp = await client.get(image)
+                    if resp.status_code == 200:
+                        finish += MessageSegment.image(file=resp.content)
             if 'retweeted_status' in weibo_info:
                 finish += await deal_with_weibo(weibo_info['retweeted_status']) or MessageSegment.text("\n获取转发微博失败")
             if 'page_info' in weibo_info and 'media_info' in weibo_info['page_info']:
