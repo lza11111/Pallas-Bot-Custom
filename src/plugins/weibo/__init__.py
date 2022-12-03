@@ -41,5 +41,8 @@ async def weibo_main(
         return
     weibo_info = await weibo_info_get(weibo_id)
     weibo_message = await deal_with_weibo(weibo_info)
-    await weibo.finish(weibo_message)
+    try:
+        await weibo.finish(weibo_message)
+    except ActionFailed as e:
+        await weibo.finish("微博消息发送失败，请手动打开链接查看")
         
