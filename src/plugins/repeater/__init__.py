@@ -168,13 +168,13 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
 
 @ speak_sched.scheduled_job('interval', seconds=5)
 async def speak_up():
-
     ret = Chat.speak()
     if not ret:
         return
 
     bot_id, group_id, messages = ret
-
+    if global_config.blocked_groups and group_id in global_config.blocked_groups:
+        return
     for msg in messages:
         logger.info(
             'repeater | bot [{}] ready to speak [{}] to group [{}]'.format(
