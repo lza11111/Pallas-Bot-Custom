@@ -39,12 +39,18 @@ async def weibo_main(
 
     if not weibo_id:
         return
-    weibo_info = await weibo_info_get(weibo_id)
+    try:
+        weibo_info = await weibo_info_get(weibo_id)
+    except TypeError as e:
+        await weibo.finish("此微博需要登录查看或者已被删除")
+
     weibo_message = await deal_with_weibo(weibo_info)
     try:
         await weibo.finish(weibo_message)
     except ActionFailed as e:
-        await weibo.finish("微博消息发送失败，请手动打开链接查看\n" + str(weibo_message))
-    except TypeError as e:
-        await weibo.finish("此微博需要登录查看或者已被删除")
+        try:
+            await weibo.finish("微博消息发送失败，尝试屏蔽链接和图片\n" + str(weibo_message))
+        except ActionFailed as e:
+            await weibo.finish("微博消息发送失败，以下是纯文本内容\n" + weibo_message.extract_plain_text())
+    
         
