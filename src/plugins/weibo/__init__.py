@@ -44,5 +44,7 @@ async def weibo_main(
     try:
         await weibo.finish(weibo_message)
     except ActionFailed as e:
-        await weibo.finish("微博消息发送失败，请手动打开链接查看")
+        await weibo.finish("微博消息发送失败，请手动打开链接查看\n" + str(weibo_message))
+    except TypeError as e:
+        await weibo.finish("此微博需要登录查看或者已被删除")
         
