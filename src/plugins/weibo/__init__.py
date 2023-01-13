@@ -51,6 +51,6 @@ async def weibo_main(
         try:
             await weibo.finish("微博消息发送失败，尝试屏蔽链接和图片\n" + str(weibo_message))
         except ActionFailed as e:
-            await weibo.finish("微博消息发送失败，以下是纯文本内容\n" + weibo_message.extract_plain_text())
+            await weibo.finish("微博消息发送失败，以下是纯文本内容\n" + str(weibo_message))
     
         
