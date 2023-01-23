@@ -12,7 +12,7 @@ from qrcode.image.pil import PilImage
 from PIL import Image, ImageFont, ImageDraw
 from pilmoji import Pilmoji
 
-from utils import get_cut_str
+from .utils import get_cut_str
 
 global_config = nonebot.get_driver().config
 
