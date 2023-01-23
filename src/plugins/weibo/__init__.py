@@ -42,8 +42,8 @@ async def weibo_main(
         logger.exception(f"此微博需要登录查看或者已被删除 {e}")
         await weibo.finish("此微博需要登录查看或者已被删除")
 
-    weibo_message = await deal_with_weibo(weibo_info)
     try:
+        weibo_message = await deal_with_weibo(weibo_info)
         await weibo.finish(weibo_message)
     except ActionFailed as e:
         try:

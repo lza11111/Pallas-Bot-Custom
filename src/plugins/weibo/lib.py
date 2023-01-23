@@ -50,8 +50,8 @@ def weibo_image_list(weibo_detail):
 
 async def deal_with_weibo(weibo_info) -> Union[str, Message, None]:
     if weibo_info and 'error_code' in weibo_info:
-        logger.exception(f'微博信息处理出错: {weibo_info}')
-        return
+        logger.exception(f'获取微博信息出错: {weibo_info}')
+        return f'获取微博信息出错: {weibo_info}'
     weibo_id = weibo_info['id']
     weibo_text = None
     finish = ''
