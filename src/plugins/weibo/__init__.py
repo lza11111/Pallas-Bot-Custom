@@ -1,10 +1,6 @@
 
-import random
+from io import BytesIO
 import asyncio
-import re
-import time
-import os
-import threading
 
 import nonebot
 from nonebot import on_message, require, get_bot, get_driver
@@ -19,6 +15,7 @@ from nonebot.permission import Permission
 from nonebot.permission import SUPERUSER
 from src.common.config import BotConfig
 
+from .draw import create_weibo_image
 from .lib import weibo_extract, weibo_info_get, weibo_long_text, weibo_image_list, deal_with_weibo
 
 global_config = nonebot.get_driver().config
@@ -42,6 +39,7 @@ async def weibo_main(
     try:
         weibo_info = await weibo_info_get(weibo_id)
     except TypeError as e:
+        logger.exception(f"此微博需要登录查看或者已被删除 {e}")
         await weibo.finish("此微博需要登录查看或者已被删除")
 
     weibo_message = await deal_with_weibo(weibo_info)
@@ -49,8 +47,15 @@ async def weibo_main(
         await weibo.finish(weibo_message)
     except ActionFailed as e:
         try:
-            await weibo.finish("微博消息发送失败，尝试屏蔽链接和图片\n" + str(weibo_message))
+            image, urls = await create_weibo_image(weibo_info)
+            image_bytes = BytesIO()
+            image.save(image_bytes, 'JPEG')
+            await weibo.finish(MessageSegment.image(file=image_bytes) + '\n'.join(urls))
         except ActionFailed as e:
-            await weibo.finish("微博消息发送失败，以下是纯文本内容\n" + str(weibo_message))
+            logger.exception(f"操作失败，内容被风控 {e}")
+            await weibo.finish("操作失败，内容被风控")
+        except TypeError as e:
+            logger.exception(f"微博解析失败 {e}")
+            await weibo.finish("微博解析失败")
     
         
