@@ -12,11 +12,11 @@ from nonebot.exception import ActionFailed
 from nonebot.typing import T_State
 from nonebot.rule import keyword, to_me, Rule
 from nonebot.adapters import Bot, Event
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
-from nonebot.adapters.onebot.v11 import permission
-from nonebot.permission import Permission
-from nonebot.permission import SUPERUSER
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent, permission, Message, MessageSegment
+from nonebot.permission import Permission, SUPERUSER
+
 from src.common.config import BotConfig
+from src.common.utils import to_image
 
 from .model import Chat, query_messages
 
@@ -209,8 +209,10 @@ async def analyzer(bot: Bot, event: GroupMessageEvent, state: T_State):
         for user in member_list:
             if user['user_id'] == context['_id']:
                 raw_message += '{0:<15}: {1}条\n'.format(user['card'] if user['card'] else user['nickname'], context['num'])
-    
+
     logger.info('repeater | bot [{}] ready to analyze in group [{}]'.format(
         event.self_id, event.user_id))
-
-    await msg_analyzer.finish(raw_message)
+    try:
+        await msg_analyzer.finish(raw_message)
+    except ActionFailed:
+        await msg_analyzer.finish(MessageSegment.image(file=to_image(raw_message)))

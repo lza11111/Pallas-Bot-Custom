@@ -128,7 +128,7 @@ class BotConfig:
         '''
         牛牛睡觉
         '''
-        BotConfig._sleep_until[self.bot_id][self.group_id] = time.time() + seconds
+        BotConfig._sleep_until[self.bot_id][self.group_id] = int(time.time() + seconds)
 
     @staticmethod
     def completely_sober():
