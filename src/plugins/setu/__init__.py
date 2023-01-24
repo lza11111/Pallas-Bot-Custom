@@ -6,7 +6,8 @@ import os
 import threading
 
 import nonebot
-from nonebot import Config, Env, on_message, on_command, on_startswith
+from nonebot import on_message, on_startswith
+from nonebot.log import logger
 from nonebot.exception import ActionFailed
 from nonebot.typing import T_State
 from nonebot.rule import keyword, to_me, Rule
@@ -35,8 +36,9 @@ async def request_setu_handler(bot: Bot, event: GroupMessageEvent, state: T_Stat
     try:
         await request_setu.send(Message(f'[CQ:reply,id={event.message_id}]{str(await request_one_setu())}'))
         use_score(event.user_id, event.group_id, 'setu_score', 100)
-    except:
-        await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]色色失败！不消耗点数'))
+    except Exception as e:
+        logger.exception(e)
+        await request_setu.finish(Message(f'[CQ:reply,id={event.message_id}]色色失败！不消耗点数 {e}'))
 
 
 score_query = on_message(
