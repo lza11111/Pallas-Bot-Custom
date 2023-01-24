@@ -13,5 +13,5 @@ async def request_one_setu(tag=None, r18=False):
     if response['error'] != '':
         return None
     setu = response['data'][0]['urls']['original']
-    return setu['title'] + MessageSegment.image(file=setu)
+    return response['data'][0]['title'] + MessageSegment.image(file=setu)
         
