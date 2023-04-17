@@ -66,7 +66,7 @@ async def zuifuli_main(sku_id: str):
     async with httpx.AsyncClient() as client:
         resp = await client.get(global_config.nodejs_endpoint + f"/zuifuli/compare?skuId={sku_id}")
         try:
-            json = await resp.json()
+            json = resp.json()
             text = ''
             if json["code"] == 200:
                 text = f'【{json["data"]["name"]}】\n 最福利价格: {json["data"]["price_z"]}\n 京东价格: {json["data"]["price_jd"]}'
