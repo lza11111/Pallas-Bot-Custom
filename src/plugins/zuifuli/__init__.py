@@ -32,7 +32,7 @@ zuifuli_extract = on_message(
     permission=permission.GROUP_ADMIN | permission.GROUP_OWNER | SUPERUSER,
 )
 
-zuifuli_command = on_command("/jd",
+zuifuli_command = on_command("jd",
     priority=14,
     block=False,
     permission=permission.GROUP_ADMIN | permission.GROUP_OWNER | SUPERUSER,
