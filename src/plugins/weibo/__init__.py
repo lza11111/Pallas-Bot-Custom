@@ -16,7 +16,7 @@ from nonebot.permission import SUPERUSER
 from src.common.config import BotConfig
 
 from .draw import create_weibo_image
-from .lib import weibo_extract, weibo_info_get, weibo_long_text, weibo_image_list, deal_with_weibo
+from .lib import weibo_extract, weibo_info_get, deal_with_weibo
 
 global_config = nonebot.get_driver().config
 
