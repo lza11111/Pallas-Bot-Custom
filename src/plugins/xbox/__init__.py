@@ -114,6 +114,7 @@ async def push_user_status():
     
     for group in group_list:
         member_list = await get_bot().get_group_member_list(group_id=int(group))
+        logger.info(member_list)
         friends_list = await get_all_people(auth_mgr, xbl_client)
         for friend in friends_list:
             text = ''
