@@ -76,13 +76,14 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
             logger.info(friend)
             for member in member_list:
                 if member["user_id"] == query_member_qq_id(event.group_id, friend.xuid):
-                    logger.info(f"{friend.xuid} {member['card']}")
-            if friend.presence_state == "Online":
-                presence_text = " and ".join([f'{details.presence_text} on {details.device}' for details in friend.presence_details]) if friend.presence_details is not None else "None"
-                text += f"{friend.modern_gamertag} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {presence_text}'}\n"
-                count += 1
-            else: 
-                text += f"{friend.modern_gamertag} {friend.presence_text}\n"
+                    logger.info(f"{friend.xuid} {member['card'] if member['card'] else member['nickname']}")
+                    nickname = member['card'] if member['card'] else member['nickname']
+                    if friend.presence_state == "Online":
+                        presence_text = " and ".join([f'{details.presence_text} on {details.device}' for details in friend.presence_details]) if friend.presence_details is not None else "None"
+                        text += f"{nickname} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {presence_text}'}\n"
+                        count += 1
+                    else: 
+                        text += f"{nickname} {friend.presence_text}\n"
         if count == 0:
             text = "没人在摸鱼"
         await xbox_status_wrapper.finish(Message(f'[CQ:reply,id={event.message_id}]{str(text)}'))
