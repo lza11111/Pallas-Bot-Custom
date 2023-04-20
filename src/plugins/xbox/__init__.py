@@ -25,7 +25,6 @@ tokens_file = Path(
 
 auth_mgr: AuthenticationManager
 
-
 async def get_all_people(xbl_client: XboxLiveClient):
     profile_users = await xbl_client.people.get_friends_own_batch([auth_mgr.xsts_token.xuid])
     my_profile = profile_users.people[0]
@@ -47,6 +46,7 @@ xbox_status_wrapper = on_message(
 
 @xbox_status_wrapper.handle()
 async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_State):
+    global auth_mgr
     message_str = str(event.get_message())
     if "谁在摸鱼" not in message_str:
         return
@@ -98,6 +98,7 @@ schedule = require('nonebot_plugin_apscheduler').scheduler
 
 @schedule.scheduled_job('interval', seconds=5)
 async def push_user_status():
+    global auth_mgr
     if not auth_mgr:
         await refresh_tokens()
     group_list = global_config.xbox_subscribe_group_list.split(',')
@@ -144,6 +145,7 @@ async def push_user_status():
 
 @schedule.scheduled_job('interval', minutes=30)
 async def refresh_tokens():
+    global auth_mgr
     async with SignedSession() as session:
         auth_mgr = AuthenticationManager(
             session, global_config.aad_client_id, global_config.aad_client_secret, "")
