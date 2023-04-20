@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Union
 
 from nonebot import on_message, get_driver, require, get_bot
 from nonebot.log import logger
@@ -23,9 +24,9 @@ global_config = get_driver().config
 tokens_file = Path(
     __file__).parent.parent.parent.parent.joinpath("tokens.json")
 
-auth_mgr: AuthenticationManager
+auth_mgr: Union[AuthenticationManager,None] = None
 
-async def get_all_people(xbl_client: XboxLiveClient):
+async def get_all_people(auth_mgr: AuthenticationManager, xbl_client: XboxLiveClient):
     profile_users = await xbl_client.people.get_friends_own_batch([auth_mgr.xsts_token.xuid])
     my_profile = profile_users.people[0]
 
@@ -46,20 +47,20 @@ xbox_status_wrapper = on_message(
 
 @xbox_status_wrapper.handle()
 async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_State):
-    global auth_mgr
     message_str = str(event.get_message())
     if "谁在摸鱼" not in message_str:
         return
     if not auth_mgr:
         await refresh_tokens()
-
+    if not auth_mgr:
+        await xbox_status_wrapper.finish("获取Token失败，请联系管理员")
     xbl_client = XboxLiveClient(
         auth_mgr, language=DefaultXboxLiveLanguages.Hong_Kong)
 
     # Get group member list
     member_list = await bot.get_group_member_list(group_id=event.group_id)
 
-    friends_list = await get_all_people(xbl_client)
+    friends_list = await get_all_people(auth_mgr, xbl_client)
 
     text = "看看谁在摸鱼:\n"
 
@@ -98,9 +99,10 @@ schedule = require('nonebot_plugin_apscheduler').scheduler
 
 @schedule.scheduled_job('interval', seconds=5)
 async def push_user_status():
-    global auth_mgr
     if not auth_mgr:
         await refresh_tokens()
+    if not auth_mgr:
+        return
     group_list = global_config.xbox_subscribe_group_list.split(',')
 
     if len(group_list) == 0:
@@ -111,7 +113,7 @@ async def push_user_status():
     
     for group in group_list:
         member_list = await get_bot().get_group_member_list(group_id=group)
-        friends_list = await get_all_people(xbl_client)
+        friends_list = await get_all_people(auth_mgr, xbl_client)
         for friend in friends_list:
             text = ''
             member_bind = query_member(group, friend.xuid)
@@ -145,7 +147,6 @@ async def push_user_status():
 
 @schedule.scheduled_job('interval', minutes=30)
 async def refresh_tokens():
-    global auth_mgr
     async with SignedSession() as session:
         auth_mgr = AuthenticationManager(
             session, global_config.aad_client_id, global_config.aad_client_secret, "")
