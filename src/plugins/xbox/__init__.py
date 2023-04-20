@@ -64,13 +64,13 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
         
         # Get friendslist
         friendslist = await xbl_client.people.get_friends_own()
+        friendslist.people.append(my_profile)
         text = "看看谁在摸鱼:\n"
         count = 0
         for friend in friendslist.people:
             if friend.presence_state == "Online":
                 text += f"{friend.modern_gamertag} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {friend.presence_text}'} on {friend.presence_devices if friend.presence_devices is not None else 'PC'}\n"
                 count += 1
-        logger.info(f"Xbox Status: {my_profile}")
         if count == 0:
             text = "没人在摸鱼"
         await xbox_status_wrapper.finish(Message(f'[CQ:reply,id={event.message_id}]{str(text)}'))
