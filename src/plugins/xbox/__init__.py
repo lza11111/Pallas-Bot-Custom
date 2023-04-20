@@ -79,10 +79,15 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
             logger.info(friend)
             for member in member_list:
                 if member["user_id"] == query_member_qq_id(event.group_id, friend.xuid):
-                    logger.info(f"{friend.xuid} {member['card'] if member['card'] else member['nickname']}")
                     nickname = member['card'] if member['card'] else member['nickname']
-                    presence_text = " and ".join([f'{details.presence_text} on {details.device}' for details in friend.presence_details]) if friend.presence_details is not None else "None"
-                    text += f"{nickname} {friend.presence_text if friend.presence_text == 'Online' else f'is playing {presence_text}'}\n"
+                    if friend.presence_details is None or len(friend.presence_details) == 0:
+                        presence_text = 'Offline'
+                        presence_icon = '🔴'
+                        text += f"[{presence_icon}] {nickname} is {presence_text}\n"
+                    else:
+                        presence_text = " and ".join([f'{details.presence_text} on {details.device}' for details in friend.presence_details]) if friend.presence_details is not None else "None"
+                        presence_icon = "🎮" if friend.presence_details[0].is_game else "🟢"
+                        text += f"[{presence_icon}] {nickname} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {presence_text}'}\n"
                     count += 1
         if count == 0:
             text = "没人在摸鱼"
