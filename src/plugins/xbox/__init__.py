@@ -97,7 +97,7 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
 schedule = require('nonebot_plugin_apscheduler').scheduler
 
 
-@schedule.scheduled_job('interval', seconds=5)
+@schedule.scheduled_job('interval', seconds=60)
 async def push_user_status():
     if not auth_mgr:
         await refresh_tokens()
@@ -120,7 +120,6 @@ async def push_user_status():
             member_bind = query_member(int(group), friend.xuid)
             if member_bind is None:
                 continue
-            logger.info(member_list)
             member = next((x for x in member_list if x["user_id"] == member_bind["user_id"]), None)
             if member is None:
                 continue
@@ -138,9 +137,11 @@ async def push_user_status():
                         [details.is_game for details in friend.presence_details]) else "🟢"
                     text += f"{presence_icon} {nickname} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {presence_text}'}\n"
                     update_member(int(group), friend.xuid, member["user_id"], friend.presence_text)
-                    await get_bot().call_api('send_group_msg', **{
-                        'message': text,
-                        'group_id': group})
+                    if any(
+                        [details.is_game for details in friend.presence_details]):
+                        await get_bot().call_api('send_group_msg', **{
+                            'message': text,
+                            'group_id': group})
                 else:
                     presence_text = friend.presence_text
                     presence_icon = '🔴'
