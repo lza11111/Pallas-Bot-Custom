@@ -1,13 +1,7 @@
 from typing import Union
 from db.mongo import group_member_mongo
 
-class GroupMemberStatus:
-    group_id: int
-    xuid: str
-    user_id: int
-    last_presence_text: str
-
-def query_member(group_id: int, xuid: str) -> Union[GroupMemberStatus,None]:
+def query_member(group_id: int, xuid: str) -> Union[dict, None]:
     result = group_member_mongo.find({
             'group_id': group_id,
             'xuid': xuid

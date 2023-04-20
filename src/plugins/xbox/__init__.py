@@ -69,7 +69,7 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
         member_bind = query_member(event.group_id, friend.xuid)
         if member_bind is None:
             continue
-        member = next((member for member in member_list if member["user_id"] == member_bind.user_id), None)
+        member = next((member for member in member_list if member["user_id"] == member_bind["user_id"]), None)
         if member is None:
             continue
         nickname = member['card'] if member['card'] else member['nickname']
@@ -121,11 +121,11 @@ async def push_user_status():
             if member_bind is None:
                 continue
             logger.info(member_list)
-            member = next((x for x in member_list if x["user_id"] == member_bind.user_id), None)
+            member = next((x for x in member_list if x["user_id"] == member_bind["user_id"]), None)
             if member is None:
                 continue
 
-            if friend.presence_text == member_bind.last_presence_text:
+            if friend.presence_text == member_bind["last_presence_text"]:
                 continue
             nickname = member['card'] if member['card'] else member['nickname']
             if friend.presence_details is None or len(friend.presence_details) == 0:
