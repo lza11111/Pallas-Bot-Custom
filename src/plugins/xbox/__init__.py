@@ -148,31 +148,31 @@ async def push_user_status():
 
 @schedule.scheduled_job('interval', minutes=30)
 async def refresh_tokens():
-    async with SignedSession() as session:
-        global auth_mgr
-        auth_mgr = AuthenticationManager(
-            session, global_config.aad_client_id, global_config.aad_client_secret, "")
-        try:
-            with open(tokens_file) as f:
-                tokens = f.read()
-            auth_mgr.oauth = OAuth2TokenResponse.parse_raw(tokens)
-        except FileNotFoundError as e:
-            logger.error(
-                f"File {tokens_file} isn`t found or it doesn`t contain tokens! err={e}"
-            )
-            return
-        try:
-            await auth_mgr.refresh_tokens()
-        except HTTPStatusError as e:
-            logger.error(
-                f"""
-                Could not refresh tokens from {tokens_file}, err={e}\n
-                You might have to delete the tokens file and re-authenticate 
-                if refresh token is expired
-            """
-            )
-            return
+    global auth_mgr
+    session = SignedSession()
+    auth_mgr = AuthenticationManager(
+        session, global_config.aad_client_id, global_config.aad_client_secret, "")
+    try:
+        with open(tokens_file) as f:
+            tokens = f.read()
+        auth_mgr.oauth = OAuth2TokenResponse.parse_raw(tokens)
+    except FileNotFoundError as e:
+        logger.error(
+            f"File {tokens_file} isn`t found or it doesn`t contain tokens! err={e}"
+        )
+        return
+    try:
+        await auth_mgr.refresh_tokens()
+    except HTTPStatusError as e:
+        logger.error(
+            f"""
+            Could not refresh tokens from {tokens_file}, err={e}\n
+            You might have to delete the tokens file and re-authenticate 
+            if refresh token is expired
+        """
+        )
+        return
 
-        # Save the refreshed/updated tokens
-        with open(tokens_file, mode="w") as f:
-            f.write(auth_mgr.oauth.json())
+    # Save the refreshed/updated tokens
+    with open(tokens_file, mode="w") as f:
+        f.write(auth_mgr.oauth.json())
