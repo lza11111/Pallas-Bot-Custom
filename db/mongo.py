@@ -33,4 +33,10 @@ blacklist_mongo = mongo_db['blacklist']
 blacklist_mongo.create_index(name='group_index',
                              keys=[('group_id', pymongo.HASHED)])
 
+group_member_mongo = mongo_db['group_member']
+group_member_mongo.create_index(name='group_index',
+                                    keys=[('group_id', pymongo.HASHED)])
+group_member_mongo.create_index(name='xuid_index',
+                                    keys=[('xuid', pymongo.HASHED)])
+                                    
 __all__ = ['mongo_client', 'message_mongo', 'context_mongo', 'score_mongo', 'blacklist_mongo']

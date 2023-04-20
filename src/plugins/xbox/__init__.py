@@ -14,6 +14,8 @@ from xbox.webapi.authentication.manager import AuthenticationManager
 from xbox.webapi.authentication.models import OAuth2TokenResponse
 from xbox.webapi.common.signed_session import SignedSession
 
+from .utils import query_member_qq_id
+
 global_config = get_driver().config
 
 tokens_file = Path(__file__).parent.parent.parent.parent.joinpath("tokens.json")
@@ -58,6 +60,9 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
 
         xbl_client = XboxLiveClient(auth_mgr)
         
+        # Get group member list
+        member_list = await bot.get_group_member_list(group_id=event.group_id)
+
         # Get profile
         profile_users = await xbl_client.people.get_friends_own_batch([auth_mgr.xsts_token.xuid])
         my_profile = profile_users.people[0]
@@ -69,10 +74,12 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
         count = 0
         for friend in friendslist.people:
             logger.info(friend)
-            if friend.xuid not in global_config.friend_xuids:
-                continue
+            for member in member_list:
+                if member["user_id"] == query_member_qq_id(event.group_id, friend.xuid):
+                    logger.info(f"{friend.xuid} {member['card']}")
             if friend.presence_state == "Online":
-                text += f"{friend.modern_gamertag} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {friend.presence_text}'} on {friend.presence_devices if friend.presence_devices is not None else 'PC'}\n"
+                presence_text = " and ".join([f'{details.presence_text} on {details.device}' for details in friend.presence_details]) if friend.presence_details is not None else "None"
+                text += f"{friend.modern_gamertag} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {presence_text}'}\n"
                 count += 1
             else: 
                 text += f"{friend.modern_gamertag} {friend.presence_text}\n"
