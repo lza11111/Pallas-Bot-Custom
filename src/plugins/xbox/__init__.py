@@ -102,6 +102,7 @@ async def push_user_status():
     if not auth_mgr:
         await refresh_tokens()
     if not auth_mgr:
+        logger.error("获取Token失败，请联系管理员")
         return
     group_list = global_config.xbox_subscribe_group_list.split(',')
 
