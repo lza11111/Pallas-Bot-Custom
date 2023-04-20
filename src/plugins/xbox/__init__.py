@@ -68,6 +68,7 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
         text = "看看谁在摸鱼:\n"
         count = 0
         for friend in friendslist.people:
+            logger.info(friend)
             if friend.presence_state == "Online":
                 text += f"{friend.modern_gamertag} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {friend.presence_text}'} on {friend.presence_devices if friend.presence_devices is not None else 'PC'}\n"
                 count += 1
