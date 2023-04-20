@@ -125,7 +125,7 @@ async def push_user_status():
             if member is None:
                 continue
 
-            if friend.presence_text == member_bind["last_presence_text"]:
+            if "last_presence_text" in member_bind and friend.presence_text == member_bind["last_presence_text"]:
                 continue
             nickname = member['card'] if member['card'] else member['nickname']
             if friend.presence_details is None or len(friend.presence_details) == 0:
