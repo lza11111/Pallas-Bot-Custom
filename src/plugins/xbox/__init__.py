@@ -120,7 +120,8 @@ async def push_user_status():
             member_bind = query_member(int(group), friend.xuid)
             if member_bind is None:
                 continue
-            member = member_list.find(lambda x: x["user_id"] == member_bind.user_id if member_bind is not None else None)
+            logger.info(member_list)
+            member = next((x for x in member_list if x["user_id"] == member_bind.user_id), None)
             if member is None:
                 continue
 
