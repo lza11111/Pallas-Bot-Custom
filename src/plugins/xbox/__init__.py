@@ -10,7 +10,7 @@ from nonebot.permission import SUPERUSER
 from nonebot.exception import ActionFailed
 from httpx import HTTPStatusError
 
-from xbox.webapi.api.client import XboxLiveClient
+from xbox.webapi.api.client import XboxLiveClient, DefaultXboxLiveLanguages
 from xbox.webapi.authentication.manager import AuthenticationManager
 from xbox.webapi.authentication.models import OAuth2TokenResponse
 from xbox.webapi.common.signed_session import SignedSession
@@ -60,7 +60,7 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
         with open(tokens_file, mode="w") as f:
             f.write(auth_mgr.oauth.json())
 
-        xbl_client = XboxLiveClient(auth_mgr)
+        xbl_client = XboxLiveClient(auth_mgr, language=DefaultXboxLiveLanguages.Hong_Kong)
         
         # Get group member list
         member_list = await bot.get_group_member_list(group_id=event.group_id)
@@ -74,18 +74,16 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
         friendslist.people.append(my_profile)
         text = "看看谁在摸鱼:\n"
         count = 0
+        friendslist.people.sort(key=lambda x: x.presence_state, reverse=True)
         for friend in friendslist.people:
             logger.info(friend)
             for member in member_list:
                 if member["user_id"] == query_member_qq_id(event.group_id, friend.xuid):
                     logger.info(f"{friend.xuid} {member['card'] if member['card'] else member['nickname']}")
                     nickname = member['card'] if member['card'] else member['nickname']
-                    if friend.presence_state == "Online":
-                        presence_text = " and ".join([f'{details.presence_text} on {details.device}' for details in friend.presence_details]) if friend.presence_details is not None else "None"
-                        text += f"{nickname} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {presence_text}'}\n"
-                        count += 1
-                    else: 
-                        text += f"{nickname} {friend.presence_text}\n"
+                    presence_text = " and ".join([f'{details.presence_text} on {details.device}' for details in friend.presence_details]) if friend.presence_details is not None else "None"
+                    text += f"{nickname} {friend.presence_text if friend.presence_text == 'Online' else f'is playing {presence_text}'}\n"
+                    count += 1
         if count == 0:
             text = "没人在摸鱼"
         try:
