@@ -149,6 +149,7 @@ async def push_user_status():
 @schedule.scheduled_job('interval', minutes=30)
 async def refresh_tokens():
     async with SignedSession() as session:
+        global auth_mgr
         auth_mgr = AuthenticationManager(
             session, global_config.aad_client_id, global_config.aad_client_secret, "")
         try:
