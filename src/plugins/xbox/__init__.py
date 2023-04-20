@@ -4,9 +4,10 @@ from nonebot import on_message, get_driver
 from nonebot.log import logger
 from nonebot.typing import T_State
 from nonebot.adapters import Bot
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, Message
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, MessageSegment
 from nonebot.adapters.onebot.v11 import permission
 from nonebot.permission import SUPERUSER
+from nonebot.exception import ActionFailed
 from httpx import HTTPStatusError
 
 from xbox.webapi.api.client import XboxLiveClient
@@ -15,6 +16,7 @@ from xbox.webapi.authentication.models import OAuth2TokenResponse
 from xbox.webapi.common.signed_session import SignedSession
 
 from .utils import query_member_qq_id
+from src.common.utils import to_image
 
 global_config = get_driver().config
 
@@ -86,4 +88,7 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
                         text += f"{nickname} {friend.presence_text}\n"
         if count == 0:
             text = "没人在摸鱼"
-        await xbox_status_wrapper.finish(Message(f'[CQ:reply,id={event.message_id}]{str(text)}'))
+        try:
+            await xbox_status_wrapper.finish(text)
+        except ActionFailed:
+            await xbox_status_wrapper.finish(MessageSegment.image(file=to_image(text)))
