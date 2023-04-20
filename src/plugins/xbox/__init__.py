@@ -104,7 +104,7 @@ async def push_user_status():
     if not auth_mgr:
         logger.error("获取Token失败，请联系管理员")
         return
-    group_list = global_config.xbox_subscribe_group_list.split(',')
+    group_list = str(global_config.xbox_subscribe_group_list).split(',')
 
     if len(group_list) == 0:
         return
@@ -113,11 +113,11 @@ async def push_user_status():
         auth_mgr, language=DefaultXboxLiveLanguages.Hong_Kong)
     
     for group in group_list:
-        member_list = await get_bot().get_group_member_list(group_id=group)
+        member_list = await get_bot().get_group_member_list(group_id=int(group))
         friends_list = await get_all_people(auth_mgr, xbl_client)
         for friend in friends_list:
             text = ''
-            member_bind = query_member(group, friend.xuid)
+            member_bind = query_member(int(group), friend.xuid)
             if member_bind is None:
                 continue
             member = next((member for member in member_list if member["user_id"] == member_bind.user_id), None)
@@ -128,7 +128,7 @@ async def push_user_status():
                 continue
             nickname = member['card'] if member['card'] else member['nickname']
             if friend.presence_details is None or len(friend.presence_details) == 0:
-                update_member(group, friend.xuid, member["user_id"], friend.presence_text)
+                update_member(int(group), friend.xuid, member["user_id"], friend.presence_text)
             else:
                 if any([details.state == 'Active' for details in friend.presence_details]):
                     presence_text = " and ".join(
@@ -136,14 +136,14 @@ async def push_user_status():
                     presence_icon = "🎮" if any(
                         [details.is_game for details in friend.presence_details]) else "🟢"
                     text += f"{presence_icon} {nickname} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {presence_text}'}\n"
-                    update_member(group, friend.xuid, member["user_id"], friend.presence_text)
+                    update_member(int(group), friend.xuid, member["user_id"], friend.presence_text)
                     await get_bot().call_api('send_group_msg', **{
                         'message': text,
                         'group_id': group})
                 else:
                     presence_text = friend.presence_text
                     presence_icon = '🔴'
-                    update_member(group, friend.xuid, member["user_id"], friend.presence_text)
+                    update_member(int(group), friend.xuid, member["user_id"], friend.presence_text)
 
 
 @schedule.scheduled_job('interval', minutes=30)
