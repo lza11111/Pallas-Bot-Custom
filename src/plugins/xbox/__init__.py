@@ -114,14 +114,13 @@ async def push_user_status():
     
     for group in group_list:
         member_list = await get_bot().get_group_member_list(group_id=int(group))
-        logger.info(member_list)
         friends_list = await get_all_people(auth_mgr, xbl_client)
         for friend in friends_list:
             text = ''
             member_bind = query_member(int(group), friend.xuid)
             if member_bind is None:
                 continue
-            member = next((member for member in member_list if member["user_id"] == member_bind.user_id), None)
+            member = member_list.find(lambda x: x["user_id"] == member_bind.user_id if member_bind is not None else None)
             if member is None:
                 continue
 
