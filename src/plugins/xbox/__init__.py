@@ -76,7 +76,7 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
         if friend.presence_details is None or len(friend.presence_details) == 0:
             presence_text = 'Offline'
             presence_icon = '🔴'
-            text += f"[{presence_icon}] {nickname} is {presence_text}\n"
+            text += f"{presence_icon} {nickname} is {presence_text}\n"
         else:
             if any([details.state == 'Active' for details in friend.presence_details]):
                 presence_text = " and ".join(
