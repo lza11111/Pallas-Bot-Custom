@@ -18,13 +18,16 @@ def query_member_list(group_id: int) -> list:
         return []
     return list(result)
 
-def update_member(group_id: int, xuid: str, user_id: int, last_presence_text: str):
+def update_member(group_id: int, xuid: str, user_id: int, last_presence_text: str, last_push_time: Union[int,None] = None):
+    set_value: dict[str, Union[str,int]] = {
+        'last_presence_text': last_presence_text,
+    }
+    if last_push_time is not None:
+        set_value['last_push_time'] = last_push_time
     group_member_mongo.update_one({
         'group_id': group_id,
         'xuid': xuid,
         'user_id': user_id,
     }, {
-        '$set': {
-            'last_presence_text': last_presence_text
-        }
+        '$set': set_value
     }, upsert=True)

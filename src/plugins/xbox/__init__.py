@@ -1,4 +1,5 @@
 from pathlib import Path
+import time
 from typing import Union
 
 from nonebot import on_message, get_driver, require, get_bot
@@ -138,7 +139,8 @@ async def push_user_status():
                     text += f"{presence_icon} {nickname} is {friend.presence_text if friend.presence_text == 'Online' else f'playing {presence_text}'}\n"
                     update_member(int(group), friend.xuid, member["user_id"], friend.presence_text)
                     if any(
-                        [details.is_game for details in friend.presence_details]):
+                        [details.is_game for details in friend.presence_details]) and "last_push_time" not in member_bind or int(time.time()) - member_bind["last_push_time"] > 60 * 15:
+                        update_member(int(group), friend.xuid, member["user_id"], friend.presence_text, last_push_time=int(time.time()))
                         await get_bot().call_api('send_group_msg', **{
                             'message': text,
                             'group_id': group})
