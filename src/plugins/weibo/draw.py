@@ -202,7 +202,7 @@ def draw_replay_image(data, option: DrawOption):
         pic_list = []
         pic_height_list = []
         for i, url in enumerate(data["url_struct"]):
-            if url["url_type"] != 39 or "pic_infos" not in url:
+            if "url_type" in url and url["url_type"] != 39 or "pic_infos" not in url:
                 continue
             for i, pic_key in enumerate(url["pic_infos"]):
                 pic_data = url["pic_infos"][pic_key]["large"]
