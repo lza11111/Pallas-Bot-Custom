@@ -98,7 +98,7 @@ async def xbox_status_wrapper_main(bot: Bot, event: GroupMessageEvent, state: T_
 schedule = require('nonebot_plugin_apscheduler').scheduler
 
 
-@schedule.scheduled_job('interval', seconds=60)
+# @schedule.scheduled_job('interval', seconds=60)
 async def push_user_status():
     if not auth_mgr:
         await refresh_tokens()
@@ -150,7 +150,7 @@ async def push_user_status():
                     update_member(int(group), friend.xuid, member["user_id"], friend.presence_text)
 
 
-@schedule.scheduled_job('interval', minutes=30)
+# @schedule.scheduled_job('interval', minutes=30)
 async def refresh_tokens():
     global auth_mgr
     session = SignedSession()
