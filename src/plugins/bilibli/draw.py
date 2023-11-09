@@ -126,18 +126,16 @@ def binfo_image_create(video_info: dict, b23_url: str):
             )
     else:
         up_mid = video_info["data"]["owner"]["mid"]
-        up_data = client.get(f"https://api.bilibili.com/x/space/acc/info?mid={up_mid}").json()
+        up_data = client.get(f"https://account.bilibili.com/api/member/getCardByMid?mid={up_mid}").json()
         up_stat = client.get(f"https://api.bilibili.com/x/relation/stat?vmid={up_mid}").json()
         up_list = [
             {
-                "name": up_data["data"]["name"],
+                "name": up_data["card"]["name"],
                 "up_title": "UP主",
-                "face": up_data["data"]["face"],
-                "color": up_data["data"]["vip"]["nickname_color"]
-                if up_data["data"]["vip"]["nickname_color"] != ""
-                else "black",
+                "face": up_data["card"]["face"],
+                "color": "black",
                 "follower": up_stat["data"]["follower"],
-                "level": up_data["data"]["level"],
+                "level": up_data["card"]["level_info"]["current_level"],
             }
         ]
     up_num = len(up_list)
