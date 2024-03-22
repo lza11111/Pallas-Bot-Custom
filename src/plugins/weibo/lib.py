@@ -23,7 +23,7 @@ async def weibo_info_get(weibo_id):
         try:
             return resp.json()
         except Exception as e:
-            logger.error(f"获取微博失败: {weibo_id} {e}")
+            logger.error(f"获取微博失败: {weibo_id} {e} {resp.text}")
             return None
 
 async def weibo_long_text(weibo_id) -> Union[str,None]:
@@ -36,7 +36,7 @@ async def weibo_long_text(weibo_id) -> Union[str,None]:
                 return json['data']['longTextContent']
             return None
         except Exception as e:
-            logger.error(f"获取长微博失败: {weibo_id} {e}")
+            logger.error(f"获取长微博失败: {weibo_id} {e} {resp.text}")
             return None
 
 def weibo_image_list(weibo_detail):
