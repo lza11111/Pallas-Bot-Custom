@@ -19,7 +19,7 @@ async def weibo_extract(text: str):
 async def weibo_info_get(weibo_id):
     url = f"https://weibo.com/ajax/statuses/show?id={weibo_id}"
     async with httpx.AsyncClient() as client:
-        resp = await client.get(url)
+        resp = await client.get(url, cookies={"SUB": global_config.weibo_sub})
         try:
             return resp.json()
         except Exception as e:
@@ -69,7 +69,7 @@ async def deal_with_weibo(weibo_info) -> Union[str, Message, None]:
             for image in image_list:
                 # download image as BytesIO
                 async with httpx.AsyncClient() as client:
-                    resp = await client.get(image)
+                    resp = await client.get(image, cookies={"SUB": global_config.weibo_sub})
                     if resp.status_code == 200:
                         finish += MessageSegment.image(file=resp.content)
                 # finish += MessageSegment.image(file=image)
