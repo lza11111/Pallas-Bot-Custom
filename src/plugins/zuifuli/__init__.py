@@ -63,7 +63,7 @@ async def zuifuli_command_main(
 
 
 async def zuifuli_main(sku_id: str):
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10) as client:
         resp = await client.get(global_config.nodejs_endpoint + f"/zuifuli/compare?skuId={sku_id}")
         try:
             json = resp.json()
